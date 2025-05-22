@@ -14,16 +14,10 @@ def get_mongo_client(uri):
     if not uri:
         return None
     
-    # Configure TLS/SSL options
-    ssl_context = ssl.create_default_context()
-    ssl_context.check_hostname = False
-    ssl_context.verify_mode = ssl.CERT_NONE
-    
-    # Connect with TLS/SSL options
+    # Connect with modern TLS/SSL options
     return MongoClient(
         uri,
-        ssl=True,
-        ssl_cert_reqs=ssl.CERT_NONE,
+        tls=True,
         tlsAllowInvalidCertificates=True
     )
 
@@ -35,10 +29,9 @@ def get_async_mongo_client(uri):
     if not uri:
         return None
     
-    # Connect with TLS/SSL options
+    # Connect with modern TLS/SSL options
     return motor.motor_asyncio.AsyncIOMotorClient(
         uri,
-        ssl=True,
-        ssl_cert_reqs=ssl.CERT_NONE,
+        tls=True,
         tlsAllowInvalidCertificates=True
     ) 
