@@ -4,13 +4,16 @@
 
 
 import pymongo
+import os
 from info import OTHER_DB_URI, DATABASE_NAME
 from pyrogram import enums
 import logging
+from database.db_helpers import get_mongo_client
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
-myclient = pymongo.MongoClient(OTHER_DB_URI)
+myclient = get_mongo_client(OTHER_DB_URI)
 mydb = myclient[DATABASE_NAME]
 
 

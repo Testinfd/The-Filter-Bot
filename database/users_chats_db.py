@@ -9,8 +9,9 @@ from pymongo import MongoClient
 from info import DATABASE_NAME, USER_DB_URI, OTHER_DB_URI, CUSTOM_FILE_CAPTION, IMDB, IMDB_TEMPLATE, MELCOW_NEW_USERS, BUTTON_MODE, SPELL_CHECK_REPLY, PROTECT_CONTENT, AUTO_DELETE, MAX_BTN, AUTO_FFILTER, SHORTLINK_API, SHORTLINK_URL, SHORTLINK_MODE, TUTORIAL, IS_TUTORIAL
 import time
 import datetime
+from database.db_helpers import get_mongo_client, get_async_mongo_client
 
-my_client = MongoClient(OTHER_DB_URI)
+my_client = get_mongo_client(OTHER_DB_URI)
 mydb = my_client["referal_user"]
 
 async def referal_add_user(user_id, ref_user_id):
@@ -60,7 +61,7 @@ default_setgs = {
 class Database:
     
     def __init__(self, uri, database_name):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
+        self._client = get_async_mongo_client(uri)
         self.db = self._client[database_name]
         self.col = self.db.users
         self.grp = self.db.groups

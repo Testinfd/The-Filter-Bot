@@ -1,17 +1,19 @@
-import motor.motor_asyncio
 from info import AUTH_CHANNEL, OTHER_DB_URI
+from database.db_helpers import get_async_mongo_client
+import motor.motor_asyncio
 
 class JoinReqs:
 
     def __init__(self):
+        self.collection = "join_requests"
         if OTHER_DB_URI:
-            self.client = motor.motor_asyncio.AsyncIOMotorClient(OTHER_DB_URI)
-            self.db = self.client["JoinReqs"]
-            self.col = self.db[str(AUTH_CHANNEL)]
+            self.client = get_async_mongo_client(OTHER_DB_URI)
+            self.db = self.client["RequestDb"]
+            self.dcol = self.db[self.collection]
         else:
             self.client = None
             self.db = None
-            self.col = None
+            self.dcol = None
 
     def isActive(self):
         if self.client is not None:
@@ -21,21 +23,21 @@ class JoinReqs:
 
     async def add_user(self, user_id, first_name, username, date):
         try:
-            await self.col.insert_one({"_id": int(user_id),"user_id": int(user_id), "first_name": first_name, "username": username, "date": date})
+            await self.dcol.insert_one({"_id": int(user_id),"user_id": int(user_id), "first_name": first_name, "username": username, "date": date})
         except:
             pass
 
     async def get_user(self, user_id):
-        return await self.col.find_one({"user_id": int(user_id)})
+        return await self.dcol.find_one({"user_id": int(user_id)})
 
     async def get_all_users(self):
-        return await self.col.find().to_list(None)
+        return await self.dcol.find().to_list(None)
 
     async def delete_user(self, user_id):
-        await self.col.delete_one({"user_id": int(user_id)})
+        await self.dcol.delete_one({"user_id": int(user_id)})
 
     async def delete_all_users(self):
-        await self.col.delete_many({})
+        await self.dcol.delete_many({})
 
     async def get_all_users_count(self):
-        return await self.col.count_documents({})
+        return await self.dcol.count_documents({})
